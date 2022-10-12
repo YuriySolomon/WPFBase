@@ -19,14 +19,25 @@ namespace WPFBase
     /// </summary>
     public partial class MinesWindow : Window
     {
+        private System.Windows.Threading.DispatcherTimer Clock;
+        private int TimeGames; //сколько секкунд прошло с момента начали новой игры
+
         private const String MINE_SUMBOL = "\x2622";
         private const String FREE_SUMBOL = "\x0DF4";
         private const String FLAG_SUMBOL = "\x2691";
+        private int allMines;   // Количество мин на карте
+        private int openCell;   // Количество открытых ячеек без мин
+        private bool startTime; // Для фиксации времени при старте/выиграше/проиграше
 
         private Random random = new();
         public MinesWindow()
         {
             InitializeComponent();
+            allMines = 0;
+            openCell = 0;
+            Clock = new() { Interval = new TimeSpan(0, 0, 0, 1) };
+            Clock.Tick += this.ClockTick!;
+
             for (int y = 0; y < App.FIELD_SIZE_Y; y++)
             {
                 for (int x = 0; x < App.FIELD_SIZE_X; x++)
@@ -35,8 +46,13 @@ namespace WPFBase
                     {
                         X = x,
                         Y = y,
-                        IsMine = random.Next(3) == 0    // random.Next(10).ToString();
+                        IsMine = random.Next(5) == 0,    // random.Next(10).ToString();
+                        Open = false
                     };
+                    if (label.IsMine)
+                    {
+                        allMines++;
+                    }
                     label.Content = FREE_SUMBOL; // label.IsMine ? "\x2622" : "\x0DF4";
                     label.FontSize = 20;
 
@@ -57,6 +73,28 @@ namespace WPFBase
                     Field.Children.Add(label);
                 }
             }
+            openCell = App.FIELD_SIZE_X * App.FIELD_SIZE_Y - allMines;            
+            Mines.Content = "Количество мин: " + allMines;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            TimeGames = 0;
+            startTime = false;            
+        }
+
+        private void ClockTick(object sender, EventArgs e)
+        {
+            if (! startTime)
+            {
+                Clock.Stop();
+            }
+            TimeGames++;
+            int h = TimeGames / 3600;        // часы
+            int m = (TimeGames % 3600) / 60; // минуты
+            int s = TimeGames % 60;          // секунды
+            String t = h.ToString("00") + ":" + m.ToString("00") + ":" + s.ToString("00");
+            ClockGames.Content = t;
         }
         // Задание: по нажатию правой кнопки мыши устанавливается "флажок"
         // при этом ячейка не нажимается левой. Повторное нажатие снимает
@@ -66,38 +104,60 @@ namespace WPFBase
 
         private bool IsWin()
         {
+            int countCell = 0;
             foreach (var child in Field.Children)
             {
                 if (child is FieldLabel label)
-                {
+                {                    
                     if (! label.IsMine && // если не мина и свободный или флажок, то не выиграл
-                        (label.Content.Equals(FREE_SUMBOL) ||
-                        label.Content.Equals(FLAG_SUMBOL)))
+                          label.Open)
                     {
-                        return false;
+                        countCell++;
                     }
                 }
             }
-            return true;
+            Mines.Content = "Количество мин: " + allMines;
+            return ((openCell - countCell) == 0 ? true : false);
         }
 
         // обработчик события нажатия ПКМ
         private void LabelRightClick(object sender, RoutedEventArgs e)
         {
+            if (! startTime)
+            {
+                Clock.Start();
+                startTime = true;
+            }
             if (sender is FieldLabel label)
             {
                 // Если контент - не закрытая ячейка. то не обрабатываем нажатие
-                if (! label.Content.Equals(FREE_SUMBOL) && ! label.Content.Equals(FLAG_SUMBOL)) return;
-                label.Content =
-                    label.Content.Equals(FLAG_SUMBOL)
-                    ? FREE_SUMBOL
-                    : FLAG_SUMBOL;
+                if (!label.Content.Equals(FREE_SUMBOL) && !label.Content.Equals(FLAG_SUMBOL)) return;
+                //label.Content =
+                //    label.Content.Equals(FLAG_SUMBOL)
+                //    ? FREE_SUMBOL
+                //    : FLAG_SUMBOL;
+                if (label.Content.Equals(FLAG_SUMBOL))
+                {
+                    label.Content = FREE_SUMBOL;
+                    allMines++;
+                }
+                else
+                {
+                    label.Content = FLAG_SUMBOL;
+                    allMines--;
+                }                
+                Mines.Content = "Количество мин: " + allMines;
             }
         }
 
         // обработчик события нажатия ЛКМ
         private void LabelClick(object sender, RoutedEventArgs e)
-        {   
+        {
+            if (! startTime)
+            {
+                Clock.Start();
+                startTime = true;
+            }
             if (sender is FieldLabel label)
             {
                 // Если контент - флажок. то не обрабатываем нажатие
@@ -107,7 +167,23 @@ namespace WPFBase
                 // отображаем на самой яческе
                 if (label.IsMine)
                 {
-                    label.Content = MINE_SUMBOL;                    
+                    startTime = false;
+                    // закрашиваем мину на которой подорвались и показываем ее
+                    label.Content = MINE_SUMBOL;
+                    label.Background = Brushes.Red;
+
+                    // открываем все мины на поле
+                    foreach (var child in Field.Children)
+                    {
+                        if (child is FieldLabel cell)
+                        {
+                            if (cell.IsMine)
+                            {
+                                cell.Content = MINE_SUMBOL;
+                            }
+                        }
+                    }
+
                     //MessageBox.Show("Game Over"); //переделат на "еще раз? (да/нет)"
                     if (MessageBoxResult.No == MessageBox.Show("Play again?", "Game Over", MessageBoxButton.YesNo))
                     {
@@ -115,28 +191,41 @@ namespace WPFBase
                     }
                     else
                     {
+                        allMines = 0;
                         foreach (var child in Field.Children)
                         {
                             if (child is FieldLabel cell)
                             {
                                 cell.Content = FREE_SUMBOL;
-                                cell.IsMine = random.Next(3) == 0;
-                                cell.Background = Brushes.Beige;                                
+                                cell.IsMine = random.Next(5) == 0;
+                                cell.Open = false;
+                                cell.Background = Brushes.Beige;
+                                if (cell.IsMine)
+                                {
+                                    allMines++;
+                                }
                             }
                         }
+                        openCell = App.FIELD_SIZE_X * App.FIELD_SIZE_Y - allMines;                        
+                        Mines.Content = "Количество мин: " + allMines;                        
+                        TimeGames = 0;
+                        ClockGames.Content = "00:00:00";                         
                     }
                     return;
                 }
+                label.Open = true;
+
                 //// Задание: на момент старта у всех ячеек контент одинаковый,
                 //// а в сообщение добавить информацию о мине
                 //if (label.IsMine)
                 //{
                 //    MessageBox.Show($"X:{label.X}, Y:{label.Y}, Mine");
                 //}
-                
+
                 // Задание: определить правого соседа, вывести данные о нем
                 //String name = $"label_{label.X + 1}_{label.Y}"; // имя соседа (х + 1)
                 // Задание: определить имена всех возможных соседей
+                
                 String[] names = //массив имен соседей
                 {
                     $"label_{label.X - 1}_{label.Y - 1}",
@@ -156,17 +245,10 @@ namespace WPFBase
                     // if (neighbour != null)
                     if (this.FindName(name) is FieldLabel neighbour)
                     {
-                        if (neighbour.IsMine) mines += 1;                        
+                        if (neighbour.IsMine) mines += 1;
                     }
                 }
 
-                // Состояние поля изменилось - проверяем условие победы
-                if (IsWin())
-                {
-                    // вывести сообщение и предложить повторную игру
-                }
-
-                //MessageBox.Show(mines.ToString());
                 switch (mines)
                 {
                     case 1: label.Background = Brushes.LightBlue; break;
@@ -178,8 +260,61 @@ namespace WPFBase
                     case 7: label.Background = Brushes.Green; break;
                     default: break;
                 }
-                label.Content = mines.ToString();    
+                label.Content = mines != 0 ? mines.ToString() : "";
+                
+                #region Win
+                // Состояние поля изменилось - проверяем условие победы
+                if (IsWin())
+                {
+                    startTime = false;
+
+                    // помечаем все мины флажками
+                    foreach (var child in Field.Children)
+                    {
+                        if (child is FieldLabel cell)
+                        {
+                            if (cell.IsMine)
+                            {
+                                cell.Content = FLAG_SUMBOL;
+                            }
+                        }
+                    }
+                    allMines = 0;
+                    Mines.Content = "Количество мин: " + allMines;
+                    // вывести сообщение и предложить повторную игру
+                    if (MessageBoxResult.No == MessageBox.Show("Play again?", "Game Won", MessageBoxButton.YesNo))
+                    {
+                        this.Close();
+                    }
+                    else
+                    {   
+                        foreach (var child in Field.Children)
+                        {
+                            if (child is FieldLabel cell)
+                            {
+                                cell.Content = FREE_SUMBOL;
+                                cell.IsMine = random.Next(3) == 0;
+                                cell.Open = false;
+                                cell.Background = Brushes.Beige;
+                                if (cell.IsMine)
+                                {
+                                    allMines++;
+                                }
+                            }
+                        }
+                        openCell = App.FIELD_SIZE_X * App.FIELD_SIZE_Y - allMines;                                                
+                        TimeGames = 0;
+                        ClockGames.Content = "00:00:00";
+                    }
+                    return;
+                }
+                #endregion
             }
+        }
+       
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Clock.Stop();
         }
     }
     /* Д.З. Обеспечить отображение ячеек с разным количеством мин
@@ -196,7 +331,7 @@ namespace WPFBase
         public int X { get; set; }
         public int Y { get; set; }
         public bool IsMine { get; set; }
-
+        public bool Open { get; set; }        
     }
 }
 

@@ -42,5 +42,23 @@ namespace WPFBase
         {            
             new CanvasWindow().ShowDialog();
         }
+        private void ButtonStyles_Click(object sender, RoutedEventArgs e)
+        {
+            new StylesWindow().ShowDialog();
+        }
+
+        private void ButtonTriggers_Click(object sender, RoutedEventArgs e)
+        {
+            new TriggersWindow().ShowDialog();
+        }
+        private void ButtonDnd_Click(object sender, RoutedEventArgs e)
+        {
+            new DndWindow().ShowDialog();
+        }
+        private void ButtonAdoBasics_Click(object sender, RoutedEventArgs e)
+        {
+            new ADO.AdoBasicsWindow().ShowDialog();
+        }
+        
     }
 }

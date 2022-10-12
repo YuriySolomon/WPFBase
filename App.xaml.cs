@@ -13,7 +13,7 @@ namespace WPFBase
     /// </summary>
     public partial class App : Application
     {
-        public const int FIELD_SIZE_X = 8; // Размер поля по горизонтали
-        public const int FIELD_SIZE_Y = 6; // Размер поля по вертикали
+        public const int FIELD_SIZE_X = 6; // Размер поля по горизонтали
+        public const int FIELD_SIZE_Y = 7; // Размер поля по вертикали
     }
 }

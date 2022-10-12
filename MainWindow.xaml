@@ -9,43 +9,59 @@
         Height="750" Width="800"
         Background="Beige"
         WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style x:Key="Button">
+            
+        </Style>
+    </Window.Resources>
+    
     <StackPanel>
+        <StackPanel.Resources>
+            <Style TargetType="Button">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Margin" Value="20, 10"/>
+                <Setter Property="Padding" Value="10, 5"/>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="FontSize" Value="20"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            </Style>
+        </StackPanel.Resources>
         <Label
-            Content="Основы WPF"
-            FontSize="20"
-            FontWeight="Bold"
-            HorizontalContentAlignment="Center"/>
+            Content="Основы WPF"/>
         
         <StackPanel Orientation="Horizontal">
             <Button
             Click="ButtonContainers_Click"
-            Content="1. Контейнеры"
-            FontSize="18"
-            HorizontalAlignment="Left"
-            Margin="20,10"
-            Padding="10,5"/>
+            Content="1. Контейнеры"/>
             <Button
             Click="ButtonTimetable_Click"
-            Content="1.1. Расписание"
-            FontSize="18"
-            HorizontalAlignment="Right"
-            Margin="20,10"
-            Padding="10,5"/>
+            Content="1.1. Расписание"/>
         </StackPanel>
         
         <Button
             Click="ButtonMines_Click"
-            Content="2. Взаимодействие элементов (Сапер)"
-            FontSize="18"
-            HorizontalAlignment="Left"
-            Margin="20,10"
-            Padding="10,5"/>
+            Content="2. Взаимодействие элементов (Сапер)"/>
         <Button
             Click="ButtonCanvas_Click"
-            Content="3. Графика и динамика"
-            FontSize="18"
-            HorizontalAlignment="Left"
-            Margin="20,10"
-            Padding="10,5"/>
+            Content="3. Графика и динамика"/>
+        <Button
+            Click="ButtonStyles_Click"
+            Content="4. Ресурсы окна: стили"/>
+        <Button
+            Click="ButtonTriggers_Click"
+            Content="5. Ресурсы окна: триггеры"/>
+        <Button
+            Click="ButtonDnd_Click"
+            Content="6. Drag n'Drop (DnD)"/>
+
+        <Label
+            Content="Технология ADO.NET"/>
+        <Button
+            Click="ButtonAdoBasics_Click"
+            Content="1. Основы"/>
     </StackPanel>
 </Window>

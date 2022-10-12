@@ -6,21 +6,26 @@
         xmlns:local="clr-namespace:WPFBase"
         mc:Ignorable="d"        
         Title="MinesWindow"
+        Loaded="Window_Loaded"
+        Closing="Window_Closing"
         Height="450"
         Width="800"
         WindowStartupLocation="CenterScreen">
-    <StackPanel Orientation="Vertical">
-        <Border>
-            <Label 
-            Background="Azure"
-            Content="Вертикальная панель"
-            Foreground="Maroon"
-            HorizontalAlignment="Center"/>
-        </Border>
+    <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Label
+                x:Name="ClockGames"
+                Content="00:00:00"
+                FontSize="20"/>
+            <Label
+                x:Name="Mines"
+                Content="0"
+                FontSize="20"/>
+        </StackPanel>
         <UniformGrid
             x:Name="Field"
             Columns="{x:Static local:App.FIELD_SIZE_X}"
             Rows="{x:Static local:App.FIELD_SIZE_Y}">
         </UniformGrid>
-    </StackPanel>
+    </DockPanel>
 </Window>
