@@ -15,7 +15,7 @@
                 <MenuItem Header="Save" Click="MenuSave_Click"/>
                 <MenuItem Header="Load" Click="MenuLoad_Click"/>
                 <Separator/>
-                <MenuItem Header="Close"/>
+                <MenuItem Header="Close" Click="MenuClose_Click"/>
             </MenuItem>
         </Menu>
         <Canvas x:Name="Field">

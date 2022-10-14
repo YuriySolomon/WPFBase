@@ -13,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Text.Json;
+using Microsoft.Win32;
+using System.IO;
 
 namespace WPFBase
 {
@@ -25,6 +27,8 @@ namespace WPFBase
         private Rectangle Phantom;  // временная копия объекта для перетаскивания
         private Rectangle Sourse;   // исходеый элемент, который "копируется"
         private Point touch;        // точка курсора мыши в момент захвата объекта
+        
+        private String m_filter = "All Files (*.*)|*.*|Text Files (*.txt)|*.txt";
 
         public DndWindow()
         {
@@ -135,12 +139,38 @@ namespace WPFBase
                 }
             }
             String json = JsonSerializer.Serialize(bricks);
-            MessageBox.Show(json);
+            //MessageBox.Show(json);
             // "[{\"Width\":70,\"Height\":20,\"Left\":337,\"Top\":101.99999999999997,\"Type\":2},{\"Width\":70,\"Height\":20,\"Left\":337,\"Top\":136.99999999999997,\"Type\":1},{\"Width\":70,\"Height\":20,\"Left\":336,\"Top\":175.99999999999997,\"Type\":2}]"
+
+            var save = new SaveFileDialog();
+            save.Filter = m_filter;
+            save.FilterIndex = 2;
+            if (save.ShowDialog() == true)
+            {
+                using (var writer = new StreamWriter(save.FileName))
+                {
+                    writer.Write(json);
+                }
+            }
         }
          private void MenuLoad_Click(object sender, RoutedEventArgs e)
         {
-            String json = "[{\"Width\":70,\"Height\":20,\"Left\":337,\"Top\":101.99999999999997,\"Type\":2},{\"Width\":70,\"Height\":20,\"Left\":337,\"Top\":136.99999999999997,\"Type\":1},{\"Width\":70,\"Height\":20,\"Left\":336,\"Top\":175.99999999999997,\"Type\":2}]";
+            String json ="";
+            var open = new OpenFileDialog();
+            open.Filter = m_filter;         
+            open.FilterIndex = 2;
+            if (open.ShowDialog() == true)
+            {
+                using (var reader = File.OpenText(open.FileName))
+                {
+                    json = reader.ReadToEnd();
+                }
+            }
+            else
+            {
+                return;
+            }
+            //String json = "[{\"Width\":70,\"Height\":20,\"Left\":337,\"Top\":101.99999999999997,\"Type\":2},{\"Width\":70,\"Height\":20,\"Left\":337,\"Top\":136.99999999999997,\"Type\":1},{\"Width\":70,\"Height\":20,\"Left\":336,\"Top\":175.99999999999997,\"Type\":2}]";
             BrickData[] bricks = JsonSerializer.Deserialize<BrickData[]>(json)!;
             if (bricks == null)
             {
@@ -186,7 +216,11 @@ namespace WPFBase
         /* Д.З. Реализовать сохранение данніх в файл (сериализация) и вігрузку из файлв
          * (десериализация). * Организовать выбор имени файла при помощи диалога
          * Экзамен: завершить все задания. приложит архив проекта 9ссулку на репозиторий)         
-         */       
+         */
+        private void MenuClose_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
     class BrickData
     {
