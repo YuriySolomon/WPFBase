@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFBase"
         mc:Ignorable="d"
-        Title="StylesWindow" Height="450" Width="800">
+        Title="StylesWindow" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
     
     <!-- Ресурсы окна - определения для его элементов -->
     <Window.Resources>
@@ -42,7 +43,7 @@
                  в нем доступны только те свойства, которые
                  ест у любых єлементов. К остальным  свойствам
                  нужно обращаться через ссылку на  тип
-                 (например, Сщтекщд) -->
+                 (например, Contol) -->
             <Setter Property="Control.VerticalContentAlignment"
                     Value="Center" />
         </Style>

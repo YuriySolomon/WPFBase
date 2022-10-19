@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFBase"
         mc:Ignorable="d"
-        Title="TriggersWindow" Height="450" Width="800">
+        Title="TriggersWindow" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen">
     
     <!-- Триггер - синоним :обработчик события" - действие,
          запускаемое при определенных обстоятельствах.
@@ -39,7 +40,7 @@
                 
                 <!-- Триггеры событий -->
                 <EventTrigger RoutedEvent="Click">
-                    <!-- Триггер. ледящий за нажатие -->
+                    <!-- Триггер, следящий за нажатие -->
                     <EventTrigger.Actions>
                         <BeginStoryboard>
                             <Storyboard>
@@ -139,7 +140,7 @@
                 </Style>
             </CheckBox.Style>
         </CheckBox>
-        <Button Height="46" Width="150" Content="Button 3">
+        <Button Height="46" Width="150" Content="Button 5">
             <Button.Style>
                 <Style TargetType="Button">
                     <Style.Triggers>

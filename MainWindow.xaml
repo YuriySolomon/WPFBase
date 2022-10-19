@@ -12,11 +12,18 @@
 
     <Window.Resources>
         <Style x:Key="Button">
-            
+            <Setter Property="Control.FontSize" Value="18"/>
+            <Setter Property="Control.HorizontalAlignment" Value="Left"/>
+            <Setter Property="Control.Margin" Value="20, 10"/>
+            <Setter Property="Control.Padding" Value="10, 5"/>
+        </Style>
+        <Style x:Key="ButtonDZ"
+               BasedOn="{StaticResource Button}">
+            <Setter Property="Control.Background" Value="LightCyan" />            
         </Style>
     </Window.Resources>
     
-    <StackPanel>
+    <StackPanel >
         <StackPanel.Resources>
             <Style TargetType="Button">
                 <Setter Property="FontSize" Value="18"/>
@@ -34,34 +41,45 @@
             Content="Основы WPF"/>
         
         <StackPanel Orientation="Horizontal">
+            <Button               
+                Click="ButtonContainers_Click"
+                Content="1. Контейнеры"/>
             <Button
-            Click="ButtonContainers_Click"
-            Content="1. Контейнеры"/>
-            <Button
-            Click="ButtonTimetable_Click"
-            Content="1.1. Расписание"/>
+                Style="{StaticResource ButtonDZ}"
+                Click="ButtonTimetable_Click"
+                Content="1.1. Расписание"/>
         </StackPanel>
         
-        <Button
+        <Button            
             Click="ButtonMines_Click"
             Content="2. Взаимодействие элементов (Сапер)"/>
-        <Button
+        <Button            
             Click="ButtonCanvas_Click"
             Content="3. Графика и динамика"/>
-        <Button
+        <Button            
             Click="ButtonStyles_Click"
             Content="4. Ресурсы окна: стили"/>
-        <Button
-            Click="ButtonTriggers_Click"
-            Content="5. Ресурсы окна: триггеры"/>
-        <Button
+        
+        <StackPanel Orientation="Horizontal">
+            <Button                
+                Click="ButtonTriggers_Click"
+                Content="5. Ресурсы окна: триггеры"/>
+            <Button
+                Style="{StaticResource ButtonDZ}"
+                Click="ButtonRegistration_Click"
+                Content="5.1 Форма регистрации"/>
+        </StackPanel>
+        
+        <Button            
             Click="ButtonDnd_Click"
             Content="6. Drag n'Drop (DnD)"/>
-
         <Label
             Content="Технология ADO.NET"/>
-        <Button
+        <Button            
             Click="ButtonAdoBasics_Click"
             Content="1. Основы"/>
+        <Button            
+            Click="ButtonAdoSales_Click"
+            Content="2. Присоединенный режим"/>
     </StackPanel>
 </Window>

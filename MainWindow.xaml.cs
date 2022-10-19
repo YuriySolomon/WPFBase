@@ -51,6 +51,10 @@ namespace WPFBase
         {
             new TriggersWindow().ShowDialog();
         }
+        private void ButtonRegistration_Click(object sender, RoutedEventArgs e)
+        {
+            new RegistrationWindow().ShowDialog();
+        }
         private void ButtonDnd_Click(object sender, RoutedEventArgs e)
         {
             new DndWindow().ShowDialog();
@@ -59,6 +63,10 @@ namespace WPFBase
         {
             new ADO.AdoBasicsWindow().ShowDialog();
         }
-        
+        private void ButtonAdoSales_Click(object sender, RoutedEventArgs e)
+        {
+            new ADO.SalesWindow().ShowDialog();
+        }
+
     }
 }
