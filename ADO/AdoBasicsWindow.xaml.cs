@@ -59,18 +59,22 @@ namespace WPFBase.ADO
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void ButtonTimestamp_Click(object sender, RoutedEventArgs e)
         {
+            if (connection.State == System.Data.ConnectionState.Closed)
+            {
+                MessageBox.Show("Подключение не было установлено!");
+                ButtonConnect_Click(sender, e);
+            }
             using (SqlCommand cmd = new SqlCommand("SELECT CURRENT_TIMESTAMP", connection))
             {
                 MessageBox.Show(cmd.ExecuteScalar().ToString()); // использование команды и возврат "скаляр" - одного рез-та
-                
+
             }
         }
-    }
+    }   
+}
     /* Обеспечить контроль открытия подключения к БД при выполнении SQL-команы.
      * Выводить предупреждение если подключение не установлено или закрыто.
      */
-}
 
