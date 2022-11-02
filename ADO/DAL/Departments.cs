@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,10 +17,43 @@ namespace WPFBase.ADO.DAL
         {
             _connection = connection;
         }
-
-         public List<Entities.Department> GetList()
+        public void Delete([NotNull] Entities.Department department)
         {
-            using(SqlCommand cmd = _connection.CreateCommand())
+            using (SqlCommand cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = String.Format(
+                    "DELETE FROM Departments WHERE Id = '{0}' ",
+                    department.Id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public Guid Create([NotNull] Entities.Department department)
+        {
+            Guid id = Guid.NewGuid();
+
+            using (SqlCommand cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = String.Format(
+                    "INSERT INTO Departments(Id, Name) VALUES('{0}', N'{1}')",
+                    id, department.Name);
+                cmd.ExecuteNonQuery();
+            }
+            return id;
+
+        }
+        public void Update([NotNull] Entities.Department department)
+        {
+            using (SqlCommand cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = String.Format(
+                    "UPDATE Departments SET Name = N'{0}' WHERE Id = '{1}'",
+                    department.Name, department.Id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public List<Entities.Department> GetList()
+        {
+            using (SqlCommand cmd = _connection.CreateCommand())
             {
                 List<Entities.Department> departments = new();
                 cmd.CommandText = "SELECT Id, Name FROM Departments";

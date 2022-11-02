@@ -16,5 +16,6 @@ namespace WPFBase
         public const int FIELD_SIZE_X = 6; // Размер поля по горизонтали
         public const int FIELD_SIZE_Y = 7; // Размер поля по вертикали
         public const String ConnectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=E:\Studing\C#\Programms\! WPF\WPFBase\ADO\ADO121.mdf;Integrated Security=True";
+        public const String ConnectionStringEF = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=ADO121_EF.mdf;Integrated Security=True";
     }
 }

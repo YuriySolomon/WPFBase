@@ -293,7 +293,7 @@ namespace WPFBase
                             if (child is FieldLabel cell)
                             {
                                 cell.Content = FREE_SUMBOL;
-                                cell.IsMine = random.Next(3) == 0;
+                                cell.IsMine = random.Next(5) == 0;
                                 cell.Open = false;
                                 cell.Background = Brushes.Beige;
                                 if (cell.IsMine)
@@ -302,7 +302,8 @@ namespace WPFBase
                                 }
                             }
                         }
-                        openCell = App.FIELD_SIZE_X * App.FIELD_SIZE_Y - allMines;                                                
+                        openCell = App.FIELD_SIZE_X * App.FIELD_SIZE_Y - allMines;
+                        Mines.Content = "Количество мин: " + allMines;
                         TimeGames = 0;
                         ClockGames.Content = "00:00:00";
                     }

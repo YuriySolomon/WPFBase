@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace WPFBase.ADO.DAL
 {
@@ -15,7 +17,38 @@ namespace WPFBase.ADO.DAL
         {
             _connection = connection;
         }
-
+        public void Delete([NotNull] Entities.Product product)
+        {
+            using (SqlCommand cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = String.Format(
+                    "DELETE FROM Products WHERE Id = '{0}' ",
+                    product.Id);
+                cmd.ExecuteNonQuery();
+            }
+        }
+        public Guid Create([NotNull] Entities.Product product)
+        {
+            Guid id = Guid.NewGuid();
+            using (SqlCommand cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = String.Format(
+                    "INSERT INTO Products(Id, Name, Price) VALUES('{0}', N'{1}', {2})",
+                    id, product.Name, product.Price);               
+                cmd.ExecuteNonQuery();
+            }
+            return id;
+        }
+        public void Update([NotNull] Entities.Product product)
+        {
+            using (SqlCommand cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = String.Format(
+                    "UPDATE Products SET Name = N'{0}', Price = {1} WHERE Id = '{2}'",
+                    product.Name, product.Price, product.Id);                
+                cmd.ExecuteNonQuery();
+            }
+        }
         public List<Entities.Product> GetList()
         {
             List<Entities.Product> products = new();
@@ -35,5 +68,6 @@ namespace WPFBase.ADO.DAL
             }
             return products;
         }
+
     }
 }

@@ -67,6 +67,17 @@ namespace WPFBase
         {
             new ADO.SalesWindow().ShowDialog();
         }
-
+        private void ButtonAdoCrud_Click(object sender, RoutedEventArgs e)
+        {
+            new ADO.View.AdoCrudWindow().ShowDialog();
+        }
+        private void ButtonEF_Click(object sender, RoutedEventArgs e)
+        {
+            new ADO.View.AdoEfWindow().ShowDialog();
+        }
+        private void ButtonSp1_Click(object sender, RoutedEventArgs e)
+        {
+            new SystemProgramming.Sp1Window().ShowDialog();
+        }
     }
 }
