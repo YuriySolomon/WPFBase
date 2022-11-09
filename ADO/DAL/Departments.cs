@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WPFBase.ADO.Entities;
 
 namespace WPFBase.ADO.DAL
 {
@@ -69,6 +70,21 @@ namespace WPFBase.ADO.DAL
                 res.Close();
                 return departments;
             }
+        }
+        public string GetDepartmentsCount()
+        {         
+            StringBuilder sb = new();
+            using (SqlCommand cmd = _connection.CreateCommand())
+            {
+                cmd.CommandText = "SELECT Departments.Name, COUNT(*) AS Kolich FROM Managers a LEFT JOIN Departments ON Departments.Id = a.Id_main_dep GROUP BY Departments.Name";
+                SqlDataReader res = cmd.ExecuteReader();
+                while (res.Read())
+                {
+                    sb.AppendLine("  " + res.GetString(0) + " - " + res.GetInt32(1));                        
+                }
+                res.Close();                
+            }
+            return sb.ToString();
         }
     }
 }

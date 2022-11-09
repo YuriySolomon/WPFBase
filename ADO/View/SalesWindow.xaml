@@ -55,8 +55,9 @@
                    FontWeight="Bold"
                    HorizontalContentAlignment="Center"
                    Content="Отдел - Количество сотрудников"/>
-            <DataGrid x:Name="DepartmentsManagersGrid" Height="165"
-                      VerticalScrollBarVisibility="Auto"/>
+            <!-- <DataGrid x:Name="DepartmentsManagersGrid" Height="165"
+                      VerticalScrollBarVisibility="Auto"/> -->
+            <TextBlock x:Name="DepartmentsManagersInfo"/>
         </StackPanel>
 
         <Grid Grid.Row="0" Grid.Column="2">

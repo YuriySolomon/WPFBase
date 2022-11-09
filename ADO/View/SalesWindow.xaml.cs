@@ -39,8 +39,12 @@ namespace WPFBase.ADO
             ShowDepartments();
             ShowProducts();
             ShowManagers();
+            ShowDepartmentsManagers();
         }
-
+        private void ShowDepartmentsManagers() 
+        {            
+            DepartmentsManagersInfo.Text = _departments.GetDepartmentsCount();         
+        }
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
             _connection.Close();

@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFBase.SystemProgramming"
         mc:Ignorable="d"
-        Title="Sp1Window" Height="450" Width="800"
+        Title="Sp1Window" Height="650" Width="800"
         Background="Beige"
         WindowStartupLocation="CenterScreen">
-    <Grid>
+    <Grid ShowGridLines="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -27,5 +27,22 @@
                     Content="Вывести сообщение"/>
             <TextBlock x:Name="Messages"/>
         </StackPanel>
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Column="0" Grid.Row="1">
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Label Content="Годовая инфляция"/>
+                <Button Content="StartSync"
+                        Margin="15 0"
+                        Click="StartSync_Click"/>
+                <Button 
+                    x:Name="StartAsyncButton"
+                    Content="StartAsync"
+                    Click="StartAsync_Click"/>
+            </StackPanel>
+            <TextBlock x:Name="Inflation"/>
+        </StackPanel>
+        
     </Grid>
 </Window>
