@@ -64,5 +64,20 @@
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <ListView ItemsSource="{Binding Managers}"
+                  ScrollViewer.VerticalScrollBarVisibility="Visible"
+                  MaxHeight="250"
+                  Grid.Row="1" Grid.Column="1">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Path=Id}"/>
+                    <GridViewColumn Header="Surname" DisplayMemberBinding="{Binding Path=Surname}"/>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                    <GridViewColumn Header="Secname" DisplayMemberBinding="{Binding Path=Secname}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
     </Grid>
 </Window>

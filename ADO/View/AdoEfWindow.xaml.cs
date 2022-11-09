@@ -24,12 +24,14 @@ namespace WPFBase.ADO.View
         private readonly EF.FirmContext FirmContext;
         public ObservableCollection<Entities.Department> Departments { get; set; }
         public ObservableCollection<Entities.Product> Products { get; set; }
+        public ObservableCollection<Entities.Manager> Managers { get; set; } 
         public AdoEfWindow()
         {
             InitializeComponent();
             FirmContext = new();
             Departments = new();
             Products = new();
+            Managers = new(); 
             this.DataContext = this;
         }
 
@@ -66,6 +68,14 @@ namespace WPFBase.ADO.View
             // Д.З. EntityFramework : вывести таблицу с сотрудниками
             // Экзамен Ж приложить архив (или ссылку на репозиторий)
             // со всеми выполненными проектами
+
+            var manQuery = FirmContext.Managers
+                            .Where(m => m.Name != null)
+                            .OrderBy(m => m.Surname);
+            foreach(var m in manQuery)
+            {
+                Managers.Add(m);
+            }
         }
     }
 }
