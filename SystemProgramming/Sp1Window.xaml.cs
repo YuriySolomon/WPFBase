@@ -33,8 +33,8 @@ namespace WPFBase.SystemProgramming
         }
         private void ShowMessage_Click(object sender, RoutedEventArgs e)
         {
-            // MessageBox.Show("Сообщение");
-            Messages.Text += "Сообщение\n";
+            // MessageBox.Show("Повідомлення");
+            Messages.Text += "Повідомлення\n";
         }
         private void ThreadMethod()
         {
@@ -53,13 +53,13 @@ namespace WPFBase.SystemProgramming
         private void StartSync_Click(object sender, RoutedEventArgs e)
         {
             double sum = 100;
-            Inflation.Text = "На начао года: " + sum;
+            Inflation.Text = "На початок року: " + sum;
             for (int i = 0; i < 12; i++)
             {
                 sum *= 1.1;  // +10%
                 Thread.Sleep(100 + rnd.Next(100));
                 Inflation.Text += String.Format(
-                    "\nМесяц {0}, Итог {1}",
+                    "\nМісяць {0}, Разом {1}",
                     i + 1, sum);
             }
         }
@@ -95,7 +95,7 @@ namespace WPFBase.SystemProgramming
                 // напрямую обратиться к єлементам окна нельзя, т.е. єто другой поток
                 // Inflation.Text += String.Format("\n Итог {1}", sum);
                 Dispatcher.Invoke( // альтернатива смотри строка 45-48
-                    () => Inflation.Text += String.Format("\nМесяц {1} Итог {0}", sum, threadData.Month)
+                    () => Inflation.Text += String.Format("\nМісяць {1} Разом {0}", sum, threadData.Month)
                 );
 
                 lock (locker2)
@@ -112,14 +112,14 @@ namespace WPFBase.SystemProgramming
 
         private void InflationComputed() // завершение - расчет закончен
         {
-            Inflation.Text += String.Format("\n--- Итог {0}", Sum);
+            Inflation.Text += String.Format("\n--- Разом {0}", Sum);
             StartAsyncButton.IsEnabled = true;  // разблокируем кнопку - работа завершена
         }
 
         private void StartAsync_Click(object sender, RoutedEventArgs e)
         {            
             Sum = 100;  // начальная сумма
-            Inflation.Text = "На начао года: " + Sum;
+            Inflation.Text = "На початок року: " + Sum;
             int monthes = 12;
             activeThreads = monthes;
             for (int i = 0; i < monthes; i++)
@@ -134,6 +134,309 @@ namespace WPFBase.SystemProgramming
             StartAsyncButton.IsEnabled = false; // блокируем кнопку до завершения всех потоков
         }
 
+        #endregion
+
+        #region DZ 1
+        
+        private int CheckEnterNumber()
+        {
+            int num;     // введенное число пользователем            
+            Summa.Text = String.Empty;            
+            try
+            {
+                num = Convert.ToInt32(TextBoxNum.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Введені дані не э числом.", "Помилка!",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+                TextBoxNum.Text = "";
+                return 0;
+            }
+            if (num <= 0 )
+            {
+                MessageBox.Show("Ви ввели невірне число.", "Помилка!",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+                TextBoxNum.Text = "";
+                return 0;
+            }            
+            return num;
+        }
+        private void StartSum_Click(object sender, RoutedEventArgs e)
+        {
+            int num;     // введенное число пользователем
+            int sum = 0; // сумма чисел от 1 до num            
+            num = CheckEnterNumber();            
+            for (int i = 1; i <= num; i++)
+            {
+                sum += i;
+                Thread.Sleep(30 + rnd.Next(30));
+                Summa.Text += String.Format(
+                    "\n Step {0}  add {1}   total {2} ",
+                    i, i, sum);
+            }
+        }
+        
+        int SumNum;
+        readonly object lockerSumNum = new();        // объект для синхронизации операций с SumNum
+
+        int activeThreadsSum;                        // счетчикактивных потоков с SumNum
+        readonly object lockerThreadsSum = new();    // объект для синхронизации операций с activeThreadsSum
+        
+        int threadsNum;
+
+        private void AddNumber(object? data) // Метод, который будет работать в потоке
+        {
+            if (data is ThreadData threadData) 
+            {   
+                Thread.Sleep(30 + rnd.Next(30));
+                int sum;
+                lock (lockerSumNum) // синхро-блок, создающий транзакцию от чтения до записи
+                {
+                    sum = SumNum;                                       
+                    sum += threadData.Month;      
+                    SumNum = sum;                   
+                }
+               
+                Dispatcher.Invoke(
+                    () => Summa.Text += String.Format("\n Step {0}  add {1}   total {2} ", threadsNum++, threadData.Month, sum)
+                );
+
+                lock (lockerThreadsSum)
+                {
+                    activeThreadsSum--;                   
+                    if (activeThreadsSum == 0)
+                    {
+                        Dispatcher.Invoke(SumNumComputed);
+                    }
+                }
+            }
+        }
+        private void SumNumComputed() // завершение - расчет закончен
+        {
+            Summa.Text += String.Format("\n--- Разом {0}", SumNum);
+            StartAsyncSum.IsEnabled = true; 
+        }
+        private void StartAsyncSum_Click(object sender, RoutedEventArgs e)
+        {
+            int num;     // введенное число пользователем
+            SumNum = 0;  // начальная сумма                        
+            threadsNum = 1;
+            num = CheckEnterNumber();
+            if (num == 0) return;
+            activeThreadsSum = num;
+            for (int i = 1; i <= num; i++)
+            {
+                new Thread(AddNumber).Start(new ThreadData { Month = i });               
+            }
+            StartAsyncSum.IsEnabled = false;
+        }
+        #endregion
+
+        #region Start/Stop potok
+        Thread worker;
+        CancellationTokenSource tokenSource;
+
+        private void Start1_Click(object sender, RoutedEventArgs e)
+        {
+            Progress1.Value = 0;
+            worker = new Thread(Worker);
+            tokenSource = new();
+            CancellationToken token = tokenSource.Token;
+            worker.Start(token);
+        }
+
+        private void Stop1_Click(object sender, RoutedEventArgs e)
+        {
+            // worker.Abort(); - deprecated, не работает
+            tokenSource.Cancel();
+        }
+
+        private void Worker(object? pars)
+        {
+            if (pars is CancellationToken token)
+            {
+                int i = 0;
+                try
+                {
+                    for (i = 0; i < 100; i++)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            // break; - просто остановка работы
+                            token.ThrowIfCancellationRequested(); // исключение
+                        }
+                        Thread.Sleep(50);
+                        Dispatcher.Invoke(() => Progress1.Value++);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // поток остановлен - нужно завершающие действия
+                    while (i > 0)
+                    {
+                        Thread.Sleep(10);
+                        Dispatcher.Invoke(() => Progress1.Value--);
+                        i--;
+                    }                                      
+                }
+            }                       
+        }
+        #endregion
+
+        #region DZ 2
+
+        Thread threadOne;
+        Thread threadTwo;
+        Thread threadThree;
+        CancellationTokenSource tokenOne;
+        CancellationTokenSource tokenTwo;
+        CancellationTokenSource tokenThree;
+
+        private void ThreadtOne(object? pars)
+        {
+            if (pars is CancellationToken token)
+            {
+                int i = 0;
+                try
+                {
+                    for (i = 0; i < 100; i++)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            token.ThrowIfCancellationRequested(); // исключение
+                        }
+                        Thread.Sleep(50);
+                        Dispatcher.Invoke(() => ProgressOne.Value++);                        
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    while (i > 0)
+                    {
+                        Thread.Sleep(10);
+                        Dispatcher.Invoke(() => ProgressOne.Value--);
+                        i--;
+                    }
+                }
+            }
+        }
+        private void ThreadtTwo(object? pars)
+        {
+            if (pars is CancellationToken token)
+            {
+                int i = 0;
+                try
+                {
+                    for (i = 0; i < 100; i++)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            token.ThrowIfCancellationRequested(); // исключение
+                        }
+                        Thread.Sleep(50);                        
+                        Dispatcher.Invoke(() => ProgressTwo.Value++);                        
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    while (i > 0)
+                    {
+                        Thread.Sleep(10);
+                        Dispatcher.Invoke(() => ProgressTwo.Value--);
+                        i--;
+                    }
+                }
+            }
+        }
+        private void ThreadtThree(object? pars)
+        {
+            if (pars is CancellationToken token)
+            {
+                int i = 0;
+                try
+                {
+                    for (i = 0; i < 100; i++)
+                    {
+                        if (token.IsCancellationRequested)
+                        {
+                            token.ThrowIfCancellationRequested(); // исключение
+                        }
+                        Thread.Sleep(50);
+                        Dispatcher.Invoke(() => ProgressThree.Value++);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    while (i > 0)
+                    {
+                        Thread.Sleep(10);
+                        Dispatcher.Invoke(() => ProgressThree.Value--);
+                        i--;
+                    }
+                }
+            }
+        }
+        private void StartOne_Click(object sender, RoutedEventArgs e)
+        {
+            ProgressOne.Value = 0;
+            ProgressTwo.Value = 0;
+            ProgressThree.Value = 0;
+            threadOne = new Thread(ThreadtOne);
+            threadTwo = new Thread(ThreadtTwo);
+            threadThree = new Thread(ThreadtThree);
+            tokenOne = new();
+            tokenTwo = new();
+            tokenThree = new();
+            CancellationToken token1 = tokenOne.Token;
+            CancellationToken token2 = tokenTwo.Token;
+            CancellationToken token3 = tokenThree.Token;
+            threadOne.Start(token1);
+            
+
+            //threadTwo.Start(token2);
+            //threadThree.Start(token3);           
+        }        
+        private void StopOne_Click(object sender, RoutedEventArgs e)
+        {
+            //tokenOne.Cancel();
+        }
+        private void StartTwo_Click(object sender, RoutedEventArgs e)
+        {
+            ProgressOne.Value = 0;
+            ProgressTwo.Value = 0;
+            ProgressThree.Value = 0;
+            threadOne = new Thread(ThreadtOne);
+            threadTwo = new Thread(ThreadtTwo);
+            threadThree = new Thread(ThreadtThree);
+            tokenOne = new();
+            tokenTwo = new();
+            tokenThree = new();
+            CancellationToken token1 = tokenOne.Token;
+            CancellationToken token2 = tokenTwo.Token;
+            CancellationToken token3 = tokenThree.Token;
+            threadOne.Start(token1);
+            threadTwo.Start(token2);
+            threadThree.Start(token3);
+        }
+        private void StopTwo_Click(object sender, RoutedEventArgs e)
+        {
+            tokenOne.Cancel();
+            tokenTwo.Cancel();
+            tokenThree.Cancel();
+        }
+        private void StartThree_Click(object sender, RoutedEventArgs e)
+        {            
+            ProgressThree.Value = 0;
+            threadThree = new Thread(ThreadtThree);
+            tokenThree = new();
+            CancellationToken token = tokenThree.Token;
+            threadThree.Start(token);
+        }
+        private void StopThree_Click(object sender, RoutedEventArgs e)
+        {
+            tokenThree.Cancel();
+        }
         #endregion
     }
 

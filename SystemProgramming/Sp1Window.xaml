@@ -21,10 +21,10 @@
         <StackPanel Orientation="Vertical">
             <Button x:Name="StartThread"
                     Click="StartThread_Click"
-                    Content="Запустить поток"/>
+                    Content="Запустити потік"/>
             <Button x:Name="ShowMessage"
                     Click="ShowMessage_Click"
-                    Content="Вывести сообщение"/>
+                    Content="Вивести повідомлення"/>
             <TextBlock x:Name="Messages"/>
         </StackPanel>
 
@@ -32,7 +32,7 @@
                     Grid.Column="0" Grid.Row="1">
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Center">
-                <Label Content="Годовая инфляция"/>
+                <Label Content="Річна інфляція"/>
                 <Button Content="StartSync"
                         Margin="15 0"
                         Click="StartSync_Click"/>
@@ -43,6 +43,125 @@
             </StackPanel>
             <TextBlock x:Name="Inflation"/>
         </StackPanel>
-        
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Column="1" Grid.Row="1">
+            <Label
+                Content="Сума всіх чисел від 1 до n"
+                FontSize="18"
+                HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal">
+                <Label
+                    Content="Введіть число від 1 до 99:"
+                    FontSize="13"/>
+                <TextBox
+                    x:Name="TextBoxNum"
+                    FontSize="13"
+                    Margin="5 3"
+                    MaxLength="2"
+                    Padding="1 1"
+                    Width="35"/>
+                <Button Content="StartSum"
+                        Click="StartSum_Click"
+                        FontSize="13"
+                        Margin="10 0"/>
+                <Button 
+                    x:Name="StartAsyncSum"
+                    Content="StartAsyncSum"
+                    Click="StartAsyncSum_Click"
+                    FontSize="13"/>
+            </StackPanel>
+
+            <ScrollViewer
+                Height="240"
+                VerticalScrollBarVisibility="Auto">
+                <TextBlock
+                x:Name="Summa"/>
+            </ScrollViewer>
+            
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical"
+                    Grid.Column="1" Grid.Row="0">
+            <Label HorizontalAlignment="Center"
+                   FontSize="20">
+                Управління потоками
+            </Label>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Content="Start"
+                        x:Name="Start1"
+                        Click="Start1_Click"/>
+                <ProgressBar Width="200"
+                             Minimum="0"
+                             Maximum="100"
+                             Margin="20 0"
+                             x:Name="Progress1"/>
+                <Button Content="Stop"
+                        x:Name="Stop1"
+                        Click="Stop1_Click"/>
+            </StackPanel>
+
+            <Label HorizontalAlignment="Center"
+                   FontSize="20">
+                ===========================
+            </Label>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Content="StartOne"
+                        x:Name="StartOne"
+                        Click="StartOne_Click"
+                        Margin="10 5"
+                        Width="60"/>
+                <Button Content="StopOne"
+                        x:Name="StopOne"
+                        Click="StopOne_Click"
+                        Margin="10 5"
+                        Width="60"/>
+                <ProgressBar Width="200"
+                             Minimum="0"
+                             Maximum="100"
+                             Margin="20 5"
+                             x:Name="ProgressOne"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Content="StartTwo"
+                        x:Name="StartTwo"
+                        Click="StartTwo_Click"
+                        Margin="10 5"
+                        Width="60"/>
+                <Button Content="StopTwo"
+                        x:Name="StopTwo"
+                        Click="StopTwo_Click"
+                        Margin="10 5"
+                        Width="60"/>
+                <ProgressBar Width="200"
+                             Minimum="0"
+                             Maximum="100"
+                             Margin="20 5"
+                             x:Name="ProgressTwo"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Content="StartThree"
+                        x:Name="StartThree"
+                        Click="StartThree_Click"
+                        Margin="10 5"
+                        Width="60"/>
+                <Button Content="StopThree"
+                        x:Name="StopThree"
+                        Click="StopThree_Click"
+                        Margin="10 5"
+                        Width="60"/>
+                <ProgressBar Width="200"
+                             Minimum="0"
+                             Maximum="100"
+                             Margin="20 5"
+                             x:Name="ProgressThree"/>
+            </StackPanel>
+            
+        </StackPanel>
+
     </Grid>
 </Window>

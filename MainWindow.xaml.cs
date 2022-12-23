@@ -79,5 +79,13 @@ namespace WPFBase
         {
             new SystemProgramming.Sp1Window().ShowDialog();
         }
+        private void ButtonTask_Click(object sender, RoutedEventArgs e)
+        {
+            new SystemProgramming.TaskWindow().ShowDialog();
+        }
+        private void ButtonProcesses_Click(object sender, RoutedEventArgs e)
+        {
+            new SystemProgramming.ProcessesWindow().ShowDialog();
+        }
     }
 }

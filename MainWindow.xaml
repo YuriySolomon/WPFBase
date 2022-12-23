@@ -92,8 +92,17 @@
 
         <Label
             Content="Системное программирование"/>
+        <StackPanel Orientation="Horizontal">
+            <Button            
+                Click="ButtonSp1_Click"
+                Content="1. Введенеи. Многопоточность."/>
+            <Button            
+                Click="ButtonTask_Click"
+                Content="2. Пул потоков. Многопоточность."/>
+        </StackPanel>
         <Button            
-            Click="ButtonSp1_Click"
-            Content="1. Введенеи. Многопоточность."/>
+                Click="ButtonProcesses_Click"
+                Content="3. Процессы (диспетчер задач)."/>
+        
     </StackPanel>
 </Window>
